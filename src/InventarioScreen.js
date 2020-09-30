@@ -2,20 +2,18 @@ import React, { useState } from 'react';
 import { useForm } from './hooks/useForm';
 import axios from 'axios';
 
-
-export const ProveedorScreen = () => {
-
+export const InventarioScreen = () => {
 
     const [formValues, handleInputChange, reset] = useForm({
-        proveedor: '',
-        categoria: '',
-        entrega: ''
+        inventario: '',
+        grupo: '',
+        cantidad: ''
     })
-    const { proveedor, categoria, entrega } = formValues;
+    const { inventario, grupo, cantidad } = formValues;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (proveedor.length > 0 || categoria.length > 0 || entrega.length > 0) {
+        if (inventario.length > 0 || grupo.length > 0 || cantidad.length > 0) {
             const dataJson = JSON.stringify(formValues);
             console.log(formValues);
             console.log(dataJson);
@@ -38,10 +36,10 @@ export const ProveedorScreen = () => {
 
     return (
         <div className="container">
-            <h1>ProveedorScreen</h1>
+            <h1>InventarioScreen</h1>
             <hr/>
             <br></br>
-            <h5> Búsqueda de proveedores por filtros</h5>
+            <h5> Búsqueda de productos por filtros</h5>
             {/* <form onSubmit={handleSubmit(onSubmit)}> */}
             <form onSubmit={handleSubmit}>
                 <div className="Container">
@@ -49,41 +47,41 @@ export const ProveedorScreen = () => {
                         <div className="form-group col-md-3">
                             <div className="input-group">
                                 <div className="input-group-prepend">
-                                    <span className="input-group-text" id="inputGroupPrependCliente"><strong>Proveedor:</strong></span>
+                                    <span className="input-group-text" id="inputGroupPrependinventario"><strong>Producto:</strong></span>
                                 </div>
                                 <input
-                                    name='proveedor'
+                                    name='inventario'
                                     type="text"
                                     className="form-control"
-                                    value={proveedor}
+                                    value={inventario}
                                     onChange={handleInputChange}
-                                    aria-describedby="inputGroupPrependCliente" />
+                                    aria-describedby="inputGroupPrependinventario" />
                             </div>
                         </div>
                         <div className="form-group col-md-3">
                             <div className="input-group">
                                 <div className="input-group-prepend">
-                                    <span className="input-group-text" id="inputGroupPrependCategoria"><strong>Categoría:</strong></span>
+                                    <span className="input-group-text" id="inputGroupPrependgrupo"><strong>G.pertenece:</strong></span>
                                 </div>
                                 <input
-                                    name='categoria'
+                                    name='grupo'
                                     type="text"
                                     className="form-control"
-                                    value={categoria}
+                                    value={grupo}
                                     onChange={handleInputChange}
-                                    aria-describedby="inputGroupPrependCategoria" />
+                                    aria-describedby="inputGroupPrependgrupo" />
                             </div>
                         </div>
                         <div className="form-group col-md-4">
                             <div className="input-group">
                                 <div className="input-group-prepend">
-                                    <span className="input-group-text" id="inputGroupPrependEntrega"><strong>Método de entrega:</strong></span>
+                                    <span className="input-group-text" id="inputGroupPrependEntrega"><strong>Cantidad:</strong></span>
                                 </div>
                                 <input
-                                    name="entrega"
-                                    type="text"
+                                    name="cantidad"
+                                    type="number"
                                     className="form-control"
-                                    value={entrega}
+                                    value={cantidad}
                                     onChange={handleInputChange}
                                     aria-describedby="inputGroupPrependEntrega" />
                             </div>

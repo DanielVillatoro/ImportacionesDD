@@ -12,27 +12,31 @@ export const ClienteScreen = () => {
     })
     const { cliente, categoria, entrega } = formValues;
 
+    const [customers, setCustomers] = useState([]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (cliente.length > 0 || categoria.length > 0 || entrega.length > 0) {
             const dataJson = JSON.stringify(formValues);
-            console.log(formValues);
-            console.log(dataJson);
-            // axios.post("http://localhost:9000/Customer",data)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         // setCustomers(cust => datosC);
-            //         console.log(datosC);
+            // console.log(formValues);
+            // console.log(dataJson);
+            axios.post("http://localhost:9000/Clientes/",formValues)
+                .then(response => {
+                    const datosC = response.data;
+                    setCustomers(cust => datosC);
+                    console.log(datosC);
 
-            //     })
-            //     .catch(error => console.log(error));
+                })
+                .catch(error => console.log(error));
             // console.log(data);
         }
     }
-
-
-    const [customers, setCustomers] = useState([]);
     // const { register, handleSubmit } = useForm();
+
+    const getDatosCliente = (id, e) => {
+        e.preventDefault();
+        console.log(id);
+    }
 
 
     return (
@@ -98,13 +102,12 @@ export const ClienteScreen = () => {
             </form>
             <br></br>
             <hr></hr>
-            <table className="table table-striped table-bordered dt-responsive nowrap" >
+            <table className="table dt-responsive nowrap table-hover" >
                 <thead>
                     <tr>
-                        <th scope="col">Tipo CC</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Fecha Vencimiento</th>
-                        <th scope="col">Monto</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Método de entrega</th>
                         <th scope="col">Seleccionar</th>
                     </tr>
                 </thead>
@@ -118,8 +121,41 @@ export const ClienteScreen = () => {
                             </tr>
                         ))
                     }
+                    {/* <tr>
+                        <td>Daniel</td>
+                        <td>Presidente</td>
+                        <td>Avion</td>
+                        <td><center><button id="1XX" className="btn btn-primary" onClick={(e) => getDatosCliente(1, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+                    </tr> */}
                 </tbody>
             </table>
+
+            <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Cliente:</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="form-group">
+                                <label htmlFor="recipient-name" className="col-form-label">Recipient:</label>
+                                <input type="text" className="form-control" id="recipient-name" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="message-text" className="col-form-label">Message:</label>
+                                <textarea className="form-control" id="message-text"></textarea>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Send message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

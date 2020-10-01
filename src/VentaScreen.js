@@ -10,16 +10,16 @@ export const VentaScreen = () => {
         numFactura: '',
         cliente: '',
         entrega: '',
-        fecha1:'',
-        fecha2:'',
-        montoMinimo:'',
-        montoMaximo:''
+        fecha1: '',
+        fecha2: '',
+        montoMinimo: '',
+        montoMaximo: ''
     })
-    const { numFactura, cliente, entrega,fecha1,fecha2,montoMinimo,montoMaximo } = formValues;
+    const { numFactura, cliente, entrega, fecha1, fecha2, montoMinimo, montoMaximo } = formValues;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (numFactura.length > 0 || cliente.length > 0 || entrega.length > 0 || (fecha1.length > 0 && fecha2.length > 0)||(montoMinimo.length > 0 && montoMaximo.length > 0)) {
+        if (numFactura.length > 0 || cliente.length > 0 || entrega.length > 0 || (fecha1.length > 0 && fecha2.length > 0) || (montoMinimo.length > 0 && montoMaximo.length > 0)) {
             const dataJson = JSON.stringify(formValues);
             console.log(formValues);
             console.log(dataJson);
@@ -38,18 +38,21 @@ export const VentaScreen = () => {
 
     const [deliveri, setCustomers] = useState([]);
 
-
+    const getDatos = (id, e) => {
+        e.preventDefault();
+        console.log(id);
+    }
 
     return (
         <div className="container">
             <h1>VentasScreen</h1>
-            <hr/>
+            <hr />
             <br></br>
             <h5> Búsqueda de ventas por filtros</h5>
             {/* <form onSubmit={handleSubmit(onSubmit)}> */}
             <form onSubmit={handleSubmit}>
                 <div className="Container">
-                <div className="form-row">
+                    <div className="form-row">
                         <div className="form-group col-md-3">
                             <div className="input-group">
                                 <div className="input-group-prepend">
@@ -164,15 +167,15 @@ export const VentaScreen = () => {
             <table className="table table-striped table-bordered dt-responsive nowrap" >
                 <thead>
                     <tr>
-                        <th scope="col">Tipo CC</th>
+                        <th scope="col">Nombre Cliente</th>
+                        <th scope="col">Proveedor</th>
                         <th scope="col">Fecha</th>
-                        <th scope="col">Fecha Vencimiento</th>
                         <th scope="col">Monto</th>
                         <th scope="col">Seleccionar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {
+                    {/* {
                         deliveri.map((deliveri) => (
                             <tr>
                                 <td>{deliveri.CustomerName}</td>
@@ -180,7 +183,14 @@ export const VentaScreen = () => {
                                 <td>{deliveri.DeliveryMethodName}</td>
                             </tr>
                         ))
-                    }
+                    } */}
+                    <tr>
+                        <td>Daniel</td>
+                        <td>Presidente</td>
+                        <td>2/2/2020</td>
+                        <td>1000</td>
+                        <td><center><button id="1" className="btn btn-primary" onClick={(e) => getDatos(1, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

@@ -35,6 +35,10 @@ export const ProveedorScreen = () => {
     const [deliveri, setCustomers] = useState([]);
 
 
+    const getDatos=(id,e)=>{
+        e.preventDefault();
+        console.log(id);
+    }
 
     return (
         <div className="container">
@@ -102,15 +106,14 @@ export const ProveedorScreen = () => {
             <table className="table table-striped table-bordered dt-responsive nowrap" >
                 <thead>
                     <tr>
-                        <th scope="col">Tipo CC</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Fecha Vencimiento</th>
-                        <th scope="col">Monto</th>
+                        <th scope="col">Nombre Proveedor</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Método de entrega</th>
                         <th scope="col">Seleccionar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {
+                    {/* {
                         deliveri.map((deliveri) => (
                             <tr>
                                 <td>{deliveri.CustomerName}</td>
@@ -118,7 +121,13 @@ export const ProveedorScreen = () => {
                                 <td>{deliveri.DeliveryMethodName}</td>
                             </tr>
                         ))
-                    }
+                    } */}
+                    <tr>
+                        <td>Daniel</td>
+                        <td>Presidente</td>
+                        <td>Avion</td>
+                        <td><center><button id="1" className="btn btn-primary" onClick={(e) => getDatos(1, e)}><i className="fa fa-check"></i></button></center></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

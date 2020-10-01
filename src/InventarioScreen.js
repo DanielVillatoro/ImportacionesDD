@@ -32,12 +32,15 @@ export const InventarioScreen = () => {
 
     const [deliveri, setCustomers] = useState([]);
 
-
+    const getDatos = (id, e) => {
+        e.preventDefault();
+        console.log(id);
+    }
 
     return (
         <div className="container">
             <h1>InventarioScreen</h1>
-            <hr/>
+            <hr />
             <br></br>
             <h5> Búsqueda de productos por filtros</h5>
             {/* <form onSubmit={handleSubmit(onSubmit)}> */}
@@ -100,15 +103,14 @@ export const InventarioScreen = () => {
             <table className="table table-striped table-bordered dt-responsive nowrap" >
                 <thead>
                     <tr>
-                        <th scope="col">Tipo CC</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Fecha Vencimiento</th>
-                        <th scope="col">Monto</th>
+                        <th scope="col">Nombre Producto</th>
+                        <th scope="col">G.pertenece</th>
+                        <th scope="col">Cantidad</th>
                         <th scope="col">Seleccionar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {
+                    {/* {
                         deliveri.map((deliveri) => (
                             <tr>
                                 <td>{deliveri.CustomerName}</td>
@@ -116,7 +118,13 @@ export const InventarioScreen = () => {
                                 <td>{deliveri.DeliveryMethodName}</td>
                             </tr>
                         ))
-                    }
+                    } */}
+                    <tr>
+                        <td>Daniel</td>
+                        <td>Presidente</td>
+                        <td>Avion</td>
+                        <td><center><button id="1" className="btn btn-primary" onClick={(e) => getDatos(1, e)}><i className="fa fa-check"></i></button></center></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

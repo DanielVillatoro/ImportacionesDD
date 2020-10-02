@@ -13,31 +13,39 @@ export const ProveedorScreen = () => {
     })
     const { proveedor, categoria, entrega } = formValues;
 
+    const [datos, setDatos] = useState([]);
+
+    const [deliveri, setDelivery] = useState([]);
     const handleSubmit = (e) => {
         e.preventDefault();
         if (proveedor.length > 0 || categoria.length > 0 || entrega.length > 0) {
-            const dataJson = JSON.stringify(formValues);
             console.log(formValues);
-            console.log(dataJson);
-            // axios.post("http://localhost:9000/Customer",data)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         // setCustomers(cust => datosC);
-            //         console.log(datosC);
+            // console.log(dataJson);
+            axios.post("http://localhost:9000/Proveedor",formValues)
+                .then(response => {
+                    const datosD = response.data;
+                    setDelivery(a => datosD);
+                    console.log(datosD);
 
-            //     })
-            //     .catch(error => console.log(error));
-            // console.log(data);
+                })
+                .catch(error => console.log(error));
         }
     }
 
 
-    const [deliveri, setCustomers] = useState([]);
-
-
     const getDatos=(id,e)=>{
         e.preventDefault();
-        console.log(id);
+        id = {
+            "id": id
+        }
+        axios.post("http://localhost:9000/ProveedorDetalle/", id)
+            .then(response => {
+                const datosC = response.data;
+                setDatos(c => datosC);
+                console.log(datosC);
+
+            })
+            .catch(error => console.log(error));
     }
 
     return (
@@ -113,23 +121,115 @@ export const ProveedorScreen = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* {
+                    {
                         deliveri.map((deliveri) => (
                             <tr>
-                                <td>{deliveri.CustomerName}</td>
-                                <td>{deliveri.CustomerCategoryName}</td>
+                                <td>{deliveri.SupplierName}</td>
+                                <td>{deliveri.SupplierCategoryName}</td>
                                 <td>{deliveri.DeliveryMethodName}</td>
+                                <td key={deliveri.SupplierID}><center><button className="btn btn-primary" onClick={(e) => getDatos(deliveri.SupplierID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+
                             </tr>
                         ))
-                    } */}
-                    <tr>
+                    }
+                    {/* <tr>
                         <td>Daniel</td>
                         <td>Presidente</td>
                         <td>Avion</td>
                         <td><center><button id="1" className="btn btn-primary" onClick={(e) => getDatos(1, e)}><i className="fa fa-check"></i></button></center></td>
-                    </tr>
+                    </tr> */}
                 </tbody>
             </table>
+
+
+
+            <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Cliente: </h5> {
+                                datos.map((data) => (
+                                    <h5 key="clienteName" className="modal-title">{data.SupplierName}</h5>
+                                ))
+                            }
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {
+                                datos.map((data) => (
+                                    <div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Código del proveedor" className="col-form-label"><b>Código del proveedor:</b></label>
+                                                <p id="Código del proveedor">{data.SupplierReference}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Sitioweb" className="col-form-label"><b>Sitio web:</b></label>
+                                                <p id="Sitioweb"><a href={data.WebsiteURL}>{data.WebsiteURL}</a></p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Categoría:</b></label>
+                                                <p id="telefono">{data.SupplierCategoryName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Ciudad de entrega:</b></label>
+                                                <p id="telefono">{data.CityName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto primario:</b></label>
+                                                <p id="telefono">{data.PrimaryContactFullName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto secundario:</b></label>
+                                                <p id="telefono">{data.AlternativeContactFullName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Código postal de entrega" className="col-form-label"><b>Código postal de entrega:</b></label>
+                                                <p id="Código postal de entrega">{data.DeliveryPostalCode}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Teléfono:</b></label>
+                                                <p id="telefono" >{data.PhoneNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="FaxNumber" className="col-form-label"><b>Fax:</b></label>
+                                                <p id="FaxNumber">{data.FaxNumber}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Nombre del banco" className="col-form-label"><b>Nombre del banco:</b></label>
+                                                <p id="Nombre del banco">{data.BankAccountName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Número de cuenta corriente:</b></label>
+                                                <p id="telefono">{data.BankAccountNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Días de gracia para pagar" className="col-form-label"><b>Días de gracia para pagar:</b></label>
+                                                <p id="Días de gracia para pagar">{data.PaymentDays}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
     )
 }

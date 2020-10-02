@@ -14,17 +14,19 @@ export const ClienteScreen = () => {
 
     const [customers, setCustomers] = useState([]);
 
+    const [datos, setDatos] = useState([]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (cliente.length > 0 || categoria.length > 0 || entrega.length > 0) {
-            const dataJson = JSON.stringify(formValues);
+            // const dataJson = JSON.stringify(formValues);
             // console.log(formValues);
             // console.log(dataJson);
-            axios.post("http://localhost:9000/Clientes/",formValues)
+            axios.post("http://localhost:9000/Clientes/", formValues)
                 .then(response => {
                     const datosC = response.data;
                     setCustomers(cust => datosC);
-                    console.log(datosC);
+                    // console.log(datosC);
 
                 })
                 .catch(error => console.log(error));
@@ -35,7 +37,19 @@ export const ClienteScreen = () => {
 
     const getDatosCliente = (id, e) => {
         e.preventDefault();
+        id = {
+            "id": id
+        }
+        // const dataJson = JSON.stringify(id);
         console.log(id);
+        axios.post("http://localhost:9000/ClienteDetalle/", id)
+            .then(response => {
+                const datosC = response.data;
+                setDatos(cust => datosC);
+                console.log(datosC);
+
+            })
+            .catch(error => console.log(error));
     }
 
 
@@ -114,19 +128,15 @@ export const ClienteScreen = () => {
                 <tbody>
                     {
                         customers.map((customer) => (
-                            <tr>
-                                <td>{customer.CustomerName}</td>
-                                <td>{customer.CustomerCategoryName}</td>
-                                <td>{customer.DeliveryMethodName}</td>
+                            <tr key={customer.CustomerID}>
+                                <td key={customer.CustomerName}>{customer.CustomerName}</td>
+                                <td key={customer.CustomerCategoryName}>{customer.CustomerCategoryName}</td>
+                                <td key={customer.DeliveryMethodName}>{customer.DeliveryMethodName}</td>
+                                <td key={customer.CustomerID}><center><button className="btn btn-primary" onClick={(e) => getDatosCliente(customer.CustomerID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+
                             </tr>
                         ))
                     }
-                    {/* <tr>
-                        <td>Daniel</td>
-                        <td>Presidente</td>
-                        <td>Avion</td>
-                        <td><center><button id="1XX" className="btn btn-primary" onClick={(e) => getDatosCliente(1, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
-                    </tr> */}
                 </tbody>
             </table>
 
@@ -134,25 +144,83 @@ export const ClienteScreen = () => {
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Cliente:</h5>
+                            <h5 className="modal-title" id="exampleModalLabel">Cliente: </h5> {
+                                datos.map((data) => (
+                                    <h5 key="clienteName" className="modal-title">{data.CustomerName}</h5>
+                                ))
+                            }
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div className="modal-body">
-                            <div className="form-group">
-                                <label htmlFor="recipient-name" className="col-form-label">Recipient:</label>
-                                <input type="text" className="form-control" id="recipient-name" />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="message-text" className="col-form-label">Message:</label>
-                                <textarea className="form-control" id="message-text"></textarea>
-                            </div>
+                            {
+                                datos.map((data) => (
+                                    <div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Teléfono:</b></label>
+                                                <p id="telefono">{data.PhoneNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Fax" className="col-form-label"><b>Fax:</b></label>
+                                                <p id="Fax">{data.FaxNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Categoría:</b></label>
+                                                <p id="telefono">{data.CustomerCategoryName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Días de gracia para pagar:</b></label>
+                                                <p id="telefono">{data.PaymentDays}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Grupo de compra:</b></label>
+                                                <p id="telefono">{data.BuyingGroupName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto primario:</b></label>
+                                                <p id="telefono">{data.PrimaryContactFullName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto secundario:</b></label>
+                                                <p id="telefono">{data.AlternativeContactFullName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Sitioweb" className="col-form-label"><b>Sitio web:</b></label>
+                                                <p id="Sitioweb"><a id="telefono" href={data.WebsiteURL}>{data.WebsiteURL}</a></p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Métodos de entrega:</b></label>
+                                                <p id="telefono">{data.DeliveryMethodName}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Dirección:</b></label>
+                                                <p id="telefono">{data.DireccionCliente}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Ciudad de entrega:</b></label>
+                                                <p id="telefono">{data.deliveryCity}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Código postal:</b></label>
+                                                <p id="telefono">{data.PostalPostalCode}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
                         </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Send message</button>
-                        </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                     </div>
                 </div>
             </div>

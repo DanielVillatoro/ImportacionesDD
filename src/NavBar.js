@@ -23,6 +23,12 @@ export const NavBar = () => {
         <li className="nav-item">
         <NavLink exact activeClassName="active" className="nav-item nav-link" to="/proveedor">Proveedor</NavLink>
         </li>
+        <li className="nav-item">
+        <NavLink exact activeClassName="active" className="nav-item nav-link" to="/inventario">Inventario</NavLink>
+        </li>
+        <li className="nav-item">
+        <NavLink exact activeClassName="active" className="nav-item nav-link" to="/venta">VentaScreen</NavLink>
+        </li>
       </ul>
     </div>
   </div>

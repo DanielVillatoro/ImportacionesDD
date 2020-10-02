@@ -111,7 +111,7 @@ export const ProveedorScreen = () => {
             </form>
             <br></br>
             <hr></hr>
-            <table className="table table-striped table-bordered dt-responsive nowrap" >
+            <table className="table dt-responsive nowrap table-hover" >
                 <thead>
                     <tr>
                         <th scope="col">Nombre Proveedor</th>
@@ -132,12 +132,6 @@ export const ProveedorScreen = () => {
                             </tr>
                         ))
                     }
-                    {/* <tr>
-                        <td>Daniel</td>
-                        <td>Presidente</td>
-                        <td>Avion</td>
-                        <td><center><button id="1" className="btn btn-primary" onClick={(e) => getDatos(1, e)}><i className="fa fa-check"></i></button></center></td>
-                    </tr> */}
                 </tbody>
             </table>
 
@@ -147,7 +141,7 @@ export const ProveedorScreen = () => {
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Cliente: </h5> {
+                            <h5 className="modal-title" id="exampleModalLabel">Proveedor: </h5> {
                                 datos.map((data) => (
                                     <h5 key="clienteName" className="modal-title">{data.SupplierName}</h5>
                                 ))

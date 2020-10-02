@@ -16,32 +16,45 @@ export const VentaScreen = () => {
         montoMaximo: ''
     })
     const { numFactura, cliente, entrega, fecha1, fecha2, montoMinimo, montoMaximo } = formValues;
+    const [Selles, setSell] = useState([]);
+    const [datos, setDatos] = useState([]);
+    
+    const nombre=null;
+    const fecha=null;
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(JSON.stringify(formValues));
         if (numFactura.length > 0 || cliente.length > 0 || entrega.length > 0 || (fecha1.length > 0 && fecha2.length > 0) || (montoMinimo.length > 0 && montoMaximo.length > 0)) {
-            const dataJson = JSON.stringify(formValues);
-            console.log(formValues);
-            console.log(dataJson);
-            // axios.post("http://localhost:9000/Customer",data)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         // setCustomers(cust => datosC);
-            //         console.log(datosC);
+            axios.post("http://localhost:9000/Ventas", formValues)
+                .then(response => {
+                    const datosD = response.data;
+                    setSell(a => datosD);
 
-            //     })
-            //     .catch(error => console.log(error));
-            // console.log(data);
+                })
+                .catch(error => console.log(error));
         }
     }
-
-
-    const [deliveri, setCustomers] = useState([]);
-
     const getDatos = (id, e) => {
-        e.preventDefault();
         console.log(id);
+        e.preventDefault();
+        id = {
+            "id": id
+        }
+        axios.post("http://localhost:9000/VentasDetalle/", id)
+            .then(response => {
+                const datosC = response.data;
+                console.log(c=>datosC);
+                setDatos(c => datosC);
+
+            })
+            .catch(error => console.log(error));
     }
+
+    const currencyFormat = (num) => {
+        return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+
 
     return (
         <div className="container">
@@ -164,35 +177,190 @@ export const VentaScreen = () => {
             </form>
             <br></br>
             <hr></hr>
-            <table className="table table-striped table-bordered dt-responsive nowrap" >
+            <table className="table dt-responsive nowrap table-hover" >
                 <thead>
                     <tr>
+                        <th scope="col"># Factura</th>
                         <th scope="col">Nombre Cliente</th>
-                        <th scope="col">Proveedor</th>
+                        <th scope="col">Método de entrega</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">Monto</th>
                         <th scope="col">Seleccionar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {/* {
-                        deliveri.map((deliveri) => (
+                    {
+                        Selles.map((sell) => (
                             <tr>
-                                <td>{deliveri.CustomerName}</td>
-                                <td>{deliveri.CustomerCategoryName}</td>
-                                <td>{deliveri.DeliveryMethodName}</td>
+                                <td>{sell.OrderID}</td>
+                                <td>{sell.CustomerName}</td>
+                                <td>{sell.DeliveryMethodName}</td>
+                                <td>{sell.OrderDate}</td>
+                                <td>{currencyFormat(sell.totalLine)}</td>
+                                <td key={sell.OrderID}><center><button className="btn btn-primary" onClick={(e) => getDatos(sell.OrderID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+
                             </tr>
                         ))
-                    } */}
-                    <tr>
-                        <td>Daniel</td>
-                        <td>Presidente</td>
-                        <td>2/2/2020</td>
-                        <td>1000</td>
-                        <td><center><button id="1" className="btn btn-primary" onClick={(e) => getDatos(1, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
-                    </tr>
+                    }
                 </tbody>
             </table>
+
+            <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Factura: </h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+
+
+
+
+
+
+                            <div className="invoice-box">
+                                <table cellPadding="0" cellSpacing="0">
+                                    <tbody>
+                                        <tr className="top">
+                                            <td colSpan="2">
+                                                <table><tbody>Nombre de Cliente
+                                                <tr>
+                                                        <td className="title">
+                                                            {
+                                                                datos.slice(0, 1).map((data) => (
+                                                                    <h4>{data.CustomerName}</h4>
+                                                                ))
+
+                                                                // console.log(pos0)
+                                                                // pos0
+                                                                
+                                                            }
+
+                                                        </td>
+                                                        {
+                                                            datos.slice(0, 1).map((data) => (
+                                                                <td>
+                                                                    # factura: {data.OrderID}<br />
+                                                                Número de orden: {data.CustomerPurchaseOrderNumber}<br />
+                                                                    Fecha:{data.OrderDate} 
+                                                                </td>
+                                                            ))
+                                                        }
+                                                    </tr>
+                                                </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr className="information">
+                                            <td colSpan="2">
+                                                <table>
+                                                    <tbody>
+                                                        {
+                                                    datos.slice(0, 1).map((data) => (
+                                                        <tr>
+                                                            <td>
+                                                            Método Entrega: {data.DeliveryMethodName}<br />
+                                                            Instrucciones de entrega: {data.DeliveryInstructions}<br />
+                            </td>
+
+                                                            <td>
+                                                            Nombre del vendedor: {data.Contact1}<br />
+                                                            Persona de contacto: {data.Contact1}<br />
+                            </td>
+                                                        </tr>
+                                                        ))
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+                                        <tr className="heading">
+                                            <td>
+                                                Payment Method
+                </td>
+
+                                            <td>
+                                                Check #
+                </td>
+                                        </tr>
+
+                                        <tr className="details">
+                                            <td>
+                                                Check
+                </td>
+
+                                            <td>
+                                                1000
+                </td>
+                                        </tr>
+
+                                        <tr className="heading">
+                                            <td>
+                                                Item
+                </td>
+
+                                            <td>
+                                                Price
+                </td>
+                                        </tr>
+
+                                        <tr className="item">
+                                            <td>
+                                                Website design
+                </td>
+
+                                            <td>
+                                                $300.00
+                </td>
+                                        </tr>
+
+                                        <tr className="item">
+                                            <td>
+                                                Hosting (3 months)
+                </td>
+
+                                            <td>
+                                                $75.00
+                </td>
+                                        </tr>
+
+                                        <tr className="item last">
+                                            <td>
+                                                Domain name (1 year)
+                </td>
+
+                                            <td>
+                                                $10.00
+                </td>
+                                        </tr>
+
+                                        <tr className="total">
+                                            <td></td>
+
+                                            <td>
+                                                Total: $385.00
+                </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

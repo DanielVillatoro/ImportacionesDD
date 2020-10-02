@@ -10,31 +10,41 @@ export const InventarioScreen = () => {
         cantidad: ''
     })
     const { inventario, grupo, cantidad } = formValues;
+    const [Inventorys, setInventario] = useState([]);
+    const [datos, setDatos] = useState([]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (inventario.length > 0 || grupo.length > 0 || cantidad.length > 0) {
-            const dataJson = JSON.stringify(formValues);
-            console.log(formValues);
-            console.log(dataJson);
-            // axios.post("http://localhost:9000/Customer",data)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         // setCustomers(cust => datosC);
-            //         console.log(datosC);
+            axios.post("http://localhost:9000/Inventario", formValues)
+                .then(response => {
+                    const datosD = response.data;
+                    setInventario(a => datosD);
+                    console.log(datosD);
 
-            //     })
-            //     .catch(error => console.log(error));
-            // console.log(data);
+                })
+                .catch(error => console.log(error));
         }
     }
-
-
-    const [deliveri, setCustomers] = useState([]);
 
     const getDatos = (id, e) => {
         e.preventDefault();
         console.log(id);
+        id = {
+            "id": id
+        }
+        axios.post("http://localhost:9000/InventarioDetalle/", id)
+            .then(response => {
+                const datosC = response.data;
+                setDatos(c => datosC);
+                console.log(datosC);
+
+            })
+            .catch(error => console.log(error));
+    }
+
+    const currencyFormat=(num)=>{ 
+        return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }
 
     return (
@@ -100,7 +110,7 @@ export const InventarioScreen = () => {
             </form>
             <br></br>
             <hr></hr>
-            <table className="table table-striped table-bordered dt-responsive nowrap" >
+            <table className="table dt-responsive nowrap table-hover" >
                 <thead>
                     <tr>
                         <th scope="col">Nombre Producto</th>
@@ -110,23 +120,113 @@ export const InventarioScreen = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* {
-                        deliveri.map((deliveri) => (
+                    {
+                        Inventorys.map((inventory) => (
                             <tr>
-                                <td>{deliveri.CustomerName}</td>
-                                <td>{deliveri.CustomerCategoryName}</td>
-                                <td>{deliveri.DeliveryMethodName}</td>
+                                <td>{inventory.StockItemName}</td>
+                                <td>{inventory.StockGroupName}</td>
+                                <td>{inventory.QuantityOnHand}</td>
+                                <td key={inventory.StockItemID}><center><button className="btn btn-primary" onClick={(e) => getDatos(inventory.StockItemID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+
                             </tr>
                         ))
-                    } */}
-                    <tr>
-                        <td>Daniel</td>
-                        <td>Presidente</td>
-                        <td>Avion</td>
-                        <td><center><button id="1" className="btn btn-primary" onClick={(e) => getDatos(1, e)}><i className="fa fa-check"></i></button></center></td>
-                    </tr>
+                    }
                 </tbody>
             </table>
+            <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Producto: </h5> {
+                                datos.map((data) => (
+                                    <h5 key="clienteName" className="modal-title">{data.StockItemName}</h5>
+                                ))
+                            }
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {
+                                datos.map((data) => (
+                                    <div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Código del proveedor" className="col-form-label"><b>Proveedor:</b></label>
+                                                <p id="Código del proveedor">{data.SupplierName} LINK</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="ColorName" className="col-form-label"><b>Color:</b></label>
+                                                <p id="ColorName">{data.ColorName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Unidad de empaquetamiento" className="col-form-label"><b>Unidad de empaquetamiento:</b></label>
+                                                <p id="Unidad de empaquetamiento">{data.UnitPackage}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Empaquetamiento" className="col-form-label"><b>Empaquetamiento:</b></label>
+                                                <p id="Empaquetamiento">{data.outerPackage}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Precio venta" className="col-form-label"><b>Precio venta:</b></label>
+                                                <p id="Precio venta">{currencyFormat(data.RecommendedRetailPrice)}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Peso:</b></label>
+                                                <p id="telefono">{data.TypicalWeightPerUnit}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Palabras claves" className="col-form-label"><b>Palabras claves:</b></label>
+                                                <p id="Palabras claves">{data.SearchDetails}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Cantidad de empaquetamiento" className="col-form-label"><b>Cantidad de empaquetamiento:</b></label>
+                                                <p id="Cantidad de empaquetamiento" >{data.quantityPackage}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Marca" className="col-form-label"><b>Marca:</b></label>
+                                                <p id="Marca">{data.Brand}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="tallas" className="col-form-label"><b>Tallas / tamaño:</b></label>
+                                                <p id="tallas">{data.Size}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Impuesto" className="col-form-label"><b>Impuesto:</b></label>
+                                                <p id="Impuesto">{data.TaxRate}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="UnitPrice" className="col-form-label"><b>Precio unitario:</b></label>
+                                                <p id="UnitPrice">{currencyFormat(data.UnitPrice)}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Cantidad disponible" className="col-form-label"><b>Cantidad disponible:</b></label>
+                                                <p id="Cantidad disponible">{data.QuantityOnHand}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="BinLocation" className="col-form-label"><b>Ubicación:</b></label>
+                                                <p id="BinLocation">{data.BinLocation}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from './hooks/useForm';
 import axios from 'axios';
 
-export const ClienteScreen = () => {
 
+export const ClienteScreen = () => {
 
     const [formValues, handleInputChange, reset] = useForm({
         cliente: '',
@@ -55,7 +55,7 @@ export const ClienteScreen = () => {
 
     return (
         <div className="container">
-            <h1>ClienteScreen</h1>
+            <h1>Modulo Clientes</h1>
             <hr />
             <br></br>
             <h5> Búsqueda de clientes por filtros</h5>
@@ -116,7 +116,8 @@ export const ClienteScreen = () => {
             </form>
             <br></br>
             <hr></hr>
-            <table className="table dt-responsive nowrap table-hover" >
+            <div className="anyClass">
+            <table className="table dt-responsive nowrap table-hover">
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
@@ -139,6 +140,7 @@ export const ClienteScreen = () => {
                     }
                 </tbody>
             </table>
+            </div>
 
             <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg">

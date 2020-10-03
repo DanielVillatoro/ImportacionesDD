@@ -4,13 +4,12 @@ exports.getClientes = function (req,resp) {
 
 	if (req.body.cliente == "") {instruction+="null,";}
 	else {instruction+="'";instruction+=req.body.cliente+"',"}
+	
 	if (req.body.categoria == "") {instruction+="null,";}
-	else {instruction+="'";
-	instruction+=req.body.categoria+"',"}
+	else {instruction+="'";instruction+=req.body.categoria+"',"}
 
 	if (req.body.entrega == "") {instruction+="null";}
-	else { instruction+="'";
-	instruction+=req.body.entrega+"'"}
+	else { instruction+="'";instruction+=req.body.entrega+"'"}
     
 	console.log(instruction);
 	db.executeSQL(instruction,function(data,err) {

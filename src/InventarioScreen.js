@@ -12,6 +12,7 @@ export const InventarioScreen = () => {
     const { inventario, grupo, cantidad } = formValues;
     const [Inventorys, setInventario] = useState([]);
     const [datos, setDatos] = useState([]);
+    const [datosProveedor, setDatosProveedor] = useState([]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -43,13 +44,28 @@ export const InventarioScreen = () => {
             .catch(error => console.log(error));
     }
 
+    const getDatosProveedor=(id,e)=>{
+        e.preventDefault();
+        id = {
+            "id": id
+        }
+        axios.post("http://localhost:9000/ProveedorDetalle/", id)
+            .then(response => {
+                const datosC = response.data;
+                setDatosProveedor(c => datosC);
+
+            })
+            .catch(error => console.log(error));
+    }
+
+
     const currencyFormat=(num)=>{ 
         return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }
 
     return (
         <div className="container">
-            <h1>InventarioScreen</h1>
+            <h1>Modulo Inventario</h1>
             <hr />
             <br></br>
             <h5> Búsqueda de productos por filtros</h5>
@@ -153,7 +169,7 @@ export const InventarioScreen = () => {
                                         <div className="form-row">
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="Código del proveedor" className="col-form-label"><b>Proveedor:</b></label>
-                                                <p id="Código del proveedor">{data.SupplierName} LINK</p>
+                                                <button className="btn btn-link" role="link" onClick={(e) => getDatosProveedor(data.SupplierID, e)} data-toggle="modal" data-target=".bd-proveedorInfo-modal-lg">{data.SupplierName}</button>
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="ColorName" className="col-form-label"><b>Color:</b></label>
@@ -227,6 +243,93 @@ export const InventarioScreen = () => {
                     </div>
                 </div>
             </div>
+
+
+            <div className="modal fade bd-proveedorInfo-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Proveedor: </h5> {
+                                datosProveedor.map((data) => (
+                                    <h5 key="clienteName" className="modal-title">{data.SupplierName}</h5>
+                                ))
+                            }
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {
+                                datosProveedor.map((data) => (
+                                    <div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Código del proveedor" className="col-form-label"><b>Código del proveedor:</b></label>
+                                                <p id="Código del proveedor">{data.SupplierReference}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Sitioweb" className="col-form-label"><b>Sitio web:</b></label>
+                                                <p id="Sitioweb"><a href={data.WebsiteURL}>{data.WebsiteURL}</a></p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Categoría:</b></label>
+                                                <p id="telefono">{data.SupplierCategoryName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Ciudad de entrega:</b></label>
+                                                <p id="telefono">{data.CityName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto primario:</b></label>
+                                                <p id="telefono">{data.PrimaryContactFullName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto secundario:</b></label>
+                                                <p id="telefono">{data.AlternativeContactFullName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Código postal de entrega" className="col-form-label"><b>Código postal de entrega:</b></label>
+                                                <p id="Código postal de entrega">{data.DeliveryPostalCode}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Teléfono:</b></label>
+                                                <p id="telefono" >{data.PhoneNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="FaxNumber" className="col-form-label"><b>Fax:</b></label>
+                                                <p id="FaxNumber">{data.FaxNumber}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Nombre del banco" className="col-form-label"><b>Nombre del banco:</b></label>
+                                                <p id="Nombre del banco">{data.BankAccountName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Número de cuenta corriente:</b></label>
+                                                <p id="telefono">{data.BankAccountNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Días de gracia para pagar" className="col-form-label"><b>Días de gracia para pagar:</b></label>
+                                                <p id="Días de gracia para pagar">{data.PaymentDays}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     )
 }

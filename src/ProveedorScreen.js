@@ -50,7 +50,7 @@ export const ProveedorScreen = () => {
 
     return (
         <div className="container">
-            <h1>ProveedorScreen</h1>
+            <h1>Modulo Proveedor</h1>
             <hr/>
             <br></br>
             <h5> Búsqueda de proveedores por filtros</h5>

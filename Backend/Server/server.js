@@ -12,9 +12,16 @@ const Inventario = require ('../Consultas/Inventario');
 const InventarioDetalle = require ('../Consultas/InventarioDetalle');
 const Ventas = require ('../Consultas/Ventas');
 const VentasDetalle = require ('../Consultas/VentasDetalle');
+//estadisticas
+const EstadisticaClientes = require ('../Consultas/EstadisticaClientes');
+const EstadisticaFacturas = require ('../Consultas/EstadisticaFacturas');
+const EstadisticaOrdenes = require ('../Consultas/EstadisticaOrdenes');
+const EstadisticaProductos = require ('../Consultas/EstadisticaProductos');
+const EstadisticaProveedores = require ('../Consultas/EstadisticaProveedores');
+
+
 
 var app = express();
-
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
@@ -28,6 +35,12 @@ app.post('/Inventario',Inventario.getInventario);
 app.post('/InventarioDetalle',InventarioDetalle.getInventarioDetalle);
 app.post('/Ventas',Ventas.getVentas);
 app.post('/VentasDetalle',VentasDetalle.getVentasDetalle);
+// estadisticas
+app.post('/EstadisticaClientes',EstadisticaClientes.getEstadisticaClientes);
+app.post('/EstadisticaFacturas',EstadisticaFacturas.getEstadisticaFacturas);
+app.post('/EstadisticaOrdenes',EstadisticaOrdenes.getEstadisticaOrdenes);
+app.post('/EstadisticaProductos',EstadisticaProductos.getEstadisticaProductos);
+app.post('/EstadisticaProveedores',EstadisticaProveedores.getEstadisticaProveedores);
 
 
 

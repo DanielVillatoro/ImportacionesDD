@@ -18,9 +18,11 @@ export const VentaScreen = () => {
     const { numFactura, cliente, entrega, fecha1, fecha2, montoMinimo, montoMaximo } = formValues;
     const [Selles, setSell] = useState([]);
     const [datos, setDatos] = useState([]);
-    
-    const nombre=null;
-    const fecha=null;
+    const [datosCliente, setDatosCliente] = useState([]);
+
+    const [datosProducto, setDatosProducto] = useState([]);
+
+    const [totalLine, setTotalLinea] = useState();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -29,14 +31,15 @@ export const VentaScreen = () => {
             axios.post("http://localhost:9000/Ventas", formValues)
                 .then(response => {
                     const datosD = response.data;
+                    console.log(datosD);
                     setSell(a => datosD);
 
                 })
                 .catch(error => console.log(error));
         }
     }
-    const getDatos = (id, e) => {
-        console.log(id);
+    const getDatos = (id, total, e) => {
+        setTotalLinea(total);
         e.preventDefault();
         id = {
             "id": id
@@ -44,8 +47,36 @@ export const VentaScreen = () => {
         axios.post("http://localhost:9000/VentasDetalle/", id)
             .then(response => {
                 const datosC = response.data;
-                console.log(c=>datosC);
                 setDatos(c => datosC);
+
+            })
+            .catch(error => console.log(error));
+    }
+
+
+    const getDatosCliente = (id, e) => {
+        e.preventDefault();
+        id = {
+            "id": id
+        }
+        axios.post("http://localhost:9000/ClienteDetalle/", id)
+            .then(response => {
+                const datosC = response.data;
+                setDatosCliente(c => datosC);
+
+            })
+            .catch(error => console.log(error));
+    }
+
+    const getDatosProducto = (id, e) => {
+        e.preventDefault();
+        id = {
+            "id": id
+        }
+        axios.post("http://localhost:9000/InventarioDetalle/", id)
+            .then(response => {
+                const datosC = response.data;
+                setDatosProducto(c => datosC);
 
             })
             .catch(error => console.log(error));
@@ -55,10 +86,16 @@ export const VentaScreen = () => {
         return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }
 
+    const currencyFormatTotal = (num) => {
+        if(num!=undefined){
+            return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        }
+    }
+
 
     return (
         <div className="container">
-            <h1>VentasScreen</h1>
+            <h1>Modulo Ventas</h1>
             <hr />
             <br></br>
             <h5> Búsqueda de ventas por filtros</h5>
@@ -192,12 +229,12 @@ export const VentaScreen = () => {
                     {
                         Selles.map((sell) => (
                             <tr>
-                                <td>{sell.OrderID}</td>
-                                <td>{sell.CustomerName}</td>
+                                <td>{sell.InvoiceID}</td>
+                                <td><button className="btn btn-link" role="link" onClick={(e) => getDatosCliente(sell.CustomerID, e)} data-toggle="modal" data-target=".bd-clienteInfo-modal-lg">{sell.CustomerName}</button></td>
                                 <td>{sell.DeliveryMethodName}</td>
-                                <td>{sell.OrderDate}</td>
+                                <td>{sell.InvoiceDate}</td>
                                 <td>{currencyFormat(sell.totalLine)}</td>
-                                <td key={sell.OrderID}><center><button className="btn btn-primary" onClick={(e) => getDatos(sell.OrderID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+                                <td key={sell.InvoiceID}><center><button className="btn btn-primary" onClick={(e) => getDatos(sell.InvoiceID, sell.totalLine, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
 
                             </tr>
                         ))
@@ -225,7 +262,7 @@ export const VentaScreen = () => {
                                 <table cellPadding="0" cellSpacing="0">
                                     <tbody>
                                         <tr className="top">
-                                            <td colSpan="2">
+                                            <td colSpan="6">
                                                 <table><tbody>Nombre de Cliente
                                                 <tr>
                                                         <td className="title">
@@ -233,19 +270,15 @@ export const VentaScreen = () => {
                                                                 datos.slice(0, 1).map((data) => (
                                                                     <h4>{data.CustomerName}</h4>
                                                                 ))
-
-                                                                // console.log(pos0)
-                                                                // pos0
-                                                                
                                                             }
 
                                                         </td>
                                                         {
                                                             datos.slice(0, 1).map((data) => (
                                                                 <td>
-                                                                    # factura: {data.OrderID}<br />
+                                                                    # factura: {data.InvoiceID}<br />
                                                                 Número de orden: {data.CustomerPurchaseOrderNumber}<br />
-                                                                    Fecha:{data.OrderDate} 
+                                                                    Fecha:{data.InvoiceDate}
                                                                 </td>
                                                             ))
                                                         }
@@ -257,23 +290,23 @@ export const VentaScreen = () => {
 
 
                                         <tr className="information">
-                                            <td colSpan="2">
+                                            <td colSpan="6">
                                                 <table>
                                                     <tbody>
                                                         {
-                                                    datos.slice(0, 1).map((data) => (
-                                                        <tr>
-                                                            <td>
-                                                            Método Entrega: {data.DeliveryMethodName}<br />
+                                                            datos.slice(0, 1).map((data) => (
+                                                                <tr>
+                                                                    <td>
+                                                                        Método Entrega: {data.DeliveryMethodName}<br />
                                                             Instrucciones de entrega: {data.DeliveryInstructions}<br />
-                            </td>
+                                                                    </td>
 
-                                                            <td>
-                                                            Nombre del vendedor: {data.Contact1}<br />
+                                                                    <td>
+                                                                        Nombre del vendedor: {data.VendorName}<br />
                                                             Persona de contacto: {data.Contact1}<br />
-                            </td>
-                                                        </tr>
-                                                        ))
+                                                                    </td>
+                                                                </tr>
+                                                            ))
                                                         }
                                                     </tbody>
                                                 </table>
@@ -281,71 +314,37 @@ export const VentaScreen = () => {
                                         </tr>
 
                                         <tr className="heading">
-                                            <td>
-                                                Payment Method
-                </td>
+                                            <td>Producto</td>
+                                            <td>Cantidad</td>
 
-                                            <td>
-                                                Check #
-                </td>
+                                            <td>Precio unitario</td>
+                                            <td>Impuesto aplicado</td>
+
+                                            <td>Monto del impuesto</td>
+                                            <td>Total</td>
                                         </tr>
 
-                                        <tr className="details">
-                                            <td>
-                                                Check
-                </td>
-
-                                            <td>
-                                                1000
-                </td>
-                                        </tr>
-
-                                        <tr className="heading">
-                                            <td>
-                                                Item
-                </td>
-
-                                            <td>
-                                                Price
-                </td>
-                                        </tr>
-
-                                        <tr className="item">
-                                            <td>
-                                                Website design
-                </td>
-
-                                            <td>
-                                                $300.00
-                </td>
-                                        </tr>
-
-                                        <tr className="item">
-                                            <td>
-                                                Hosting (3 months)
-                </td>
-
-                                            <td>
-                                                $75.00
-                </td>
-                                        </tr>
-
-                                        <tr className="item last">
-                                            <td>
-                                                Domain name (1 year)
-                </td>
-
-                                            <td>
-                                                $10.00
-                </td>
-                                        </tr>
+                                        {
+                                            datos.map((data) => (
+                                                <tr className="item">
+                                                    <td><button class="btn btn-link" role="link" onClick={(e) => getDatosProducto(data.StockItemID, e)} data-toggle="modal" data-target=".bd-productoInfo-modal-lg">{data.StockItemName}</button></td>
+                                                    <td>{data.Quantity}</td>
+                                                    <td>{currencyFormat(data.UnitPrice)}</td>
+                                                    <td>{data.TaxRate}  %</td>
+                                                    <td>{currencyFormat(data.TaxAmount)}</td>
+                                                    <td>{currencyFormat(data.TotalLine)}</td>
+                                                </tr>
+                                            ))
+                                        }
 
                                         <tr className="total">
                                             <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Total: {currencyFormatTotal(totalLine)}</td>
 
-                                            <td>
-                                                Total: $385.00
-                </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -361,6 +360,196 @@ export const VentaScreen = () => {
                     </div>
                 </div>
             </div>
+
+
+
+
+
+
+            <div className="modal fade bd-clienteInfo-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Cliente: </h5>{
+                            datosCliente.map((data) => (
+                                    <h5 key="clienteName" className="modal-title">{data.CustomerName}</h5>
+                                ))
+                            }
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                        {
+                                datosCliente.map((data) => (
+                                    <div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Teléfono:</b></label>
+                                                <p id="telefono">{data.PhoneNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Fax" className="col-form-label"><b>Fax:</b></label>
+                                                <p id="Fax">{data.FaxNumber}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Categoría:</b></label>
+                                                <p id="telefono">{data.CustomerCategoryName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Días de gracia para pagar:</b></label>
+                                                <p id="telefono">{data.PaymentDays}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Grupo de compra:</b></label>
+                                                <p id="telefono">{data.BuyingGroupName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto primario:</b></label>
+                                                <p id="telefono">{data.PrimaryContactFullName}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Contacto secundario:</b></label>
+                                                <p id="telefono">{data.AlternativeContactFullName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Sitioweb" className="col-form-label"><b>Sitio web:</b></label>
+                                                <p id="Sitioweb"><a id="telefono" href={data.WebsiteURL}>{data.WebsiteURL}</a></p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Métodos de entrega:</b></label>
+                                                <p id="telefono">{data.DeliveryMethodName}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Dirección:</b></label>
+                                                <p id="telefono">{data.DireccionCliente}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Ciudad de entrega:</b></label>
+                                                <p id="telefono">{data.deliveryCity}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Código postal:</b></label>
+                                                <p id="telefono">{data.PostalPostalCode}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+
+
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div className="modal fade  bd-productoInfo-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Producto: </h5> {
+                                datosProducto.map((data) => (
+                                    <h5 key="clienteName" className="modal-title">{data.StockItemName}</h5>
+                                ))
+                            }
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {
+                                datosProducto.map((data) => (
+                                    <div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Código del proveedor" className="col-form-label"><b>Proveedor:</b></label>
+                                                <p id="Código del proveedor">{data.SupplierName} LINK</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="ColorName" className="col-form-label"><b>Color:</b></label>
+                                                <p id="ColorName">{data.ColorName}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Unidad de empaquetamiento" className="col-form-label"><b>Unidad de empaquetamiento:</b></label>
+                                                <p id="Unidad de empaquetamiento">{data.UnitPackage}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Empaquetamiento" className="col-form-label"><b>Empaquetamiento:</b></label>
+                                                <p id="Empaquetamiento">{data.outerPackage}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Precio venta" className="col-form-label"><b>Precio venta:</b></label>
+                                                <p id="Precio venta">{currencyFormat(data.RecommendedRetailPrice)}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="telefono" className="col-form-label"><b>Peso:</b></label>
+                                                <p id="telefono">{data.TypicalWeightPerUnit}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Palabras claves" className="col-form-label"><b>Palabras claves:</b></label>
+                                                <p id="Palabras claves">{data.SearchDetails}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Cantidad de empaquetamiento" className="col-form-label"><b>Cantidad de empaquetamiento:</b></label>
+                                                <p id="Cantidad de empaquetamiento" >{data.quantityPackage}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Marca" className="col-form-label"><b>Marca:</b></label>
+                                                <p id="Marca">{data.Brand}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="tallas" className="col-form-label"><b>Tallas / tamaño:</b></label>
+                                                <p id="tallas">{data.Size}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Impuesto" className="col-form-label"><b>Impuesto:</b></label>
+                                                <p id="Impuesto">{data.TaxRate}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="UnitPrice" className="col-form-label"><b>Precio unitario:</b></label>
+                                                <p id="UnitPrice">{currencyFormat(data.UnitPrice)}</p>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="Cantidad disponible" className="col-form-label"><b>Cantidad disponible:</b></label>
+                                                <p id="Cantidad disponible">{data.QuantityOnHand}</p>
+                                            </div>
+                                            <div className="form-group col-md-4">
+                                                <label htmlFor="BinLocation" className="col-form-label"><b>Ubicación:</b></label>
+                                                <p id="BinLocation">{data.BinLocation}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     )
 }

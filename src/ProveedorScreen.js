@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from './hooks/useForm';
+import { MapContainer } from './hooks/mapa';
 import axios from 'axios';
 
 
@@ -14,6 +15,7 @@ export const ProveedorScreen = () => {
     const { proveedor, categoria, entrega } = formValues;
 
     const [datos, setDatos] = useState([]);
+    const [datosUbicacion,setDatosUbicacion]=useState();
 
     const [deliveri, setDelivery] = useState([]);
     const handleSubmit = (e) => {
@@ -21,7 +23,7 @@ export const ProveedorScreen = () => {
         if (proveedor.length > 0 || categoria.length > 0 || entrega.length > 0) {
             console.log(formValues);
             // console.log(dataJson);
-            axios.post("http://localhost:9000/Proveedor",formValues)
+            axios.post("http://localhost:9000/Proveedor", formValues)
                 .then(response => {
                     const datosD = response.data;
                     setDelivery(a => datosD);
@@ -33,7 +35,7 @@ export const ProveedorScreen = () => {
     }
 
 
-    const getDatos=(id,e)=>{
+    const getDatos = (id, e) => {
         e.preventDefault();
         id = {
             "id": id
@@ -43,6 +45,20 @@ export const ProveedorScreen = () => {
                 const datosC = response.data;
                 setDatos(c => datosC);
                 console.log(datosC);
+                const [detalles]=datosC;
+                const {DeliveryLocation}=detalles;
+                const {points}=DeliveryLocation;
+                const [pointsData]=points;
+                const {x,y}=pointsData;
+                setDatosUbicacion(
+                    {
+                        name: "Location 1",
+                        location: {
+                            lat: x,
+                            lng: y
+                        },
+                    }
+                );
 
             })
             .catch(error => console.log(error));
@@ -50,8 +66,8 @@ export const ProveedorScreen = () => {
 
     return (
         <div className="container">
-            <h1>Modulo Proveedor</h1>
-            <hr/>
+            <h1>Módulo Proveedor</h1>
+            <hr />
             <br></br>
             <h5> Búsqueda de proveedores por filtros</h5>
             {/* <form onSubmit={handleSubmit(onSubmit)}> */}
@@ -214,10 +230,14 @@ export const ProveedorScreen = () => {
                                     </div>
                                 ))
                             }
+                            <h3>Localización:</h3>
+                            <MapContainer location={[
+                                datosUbicacion
+                            ]} />
                         </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>

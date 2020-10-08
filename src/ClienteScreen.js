@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from './hooks/useForm';
+import { MapContainer } from './hooks/mapa';
 import axios from 'axios';
+
 
 
 export const ClienteScreen = () => {
@@ -15,6 +17,8 @@ export const ClienteScreen = () => {
     const [customers, setCustomers] = useState([]);
 
     const [datos, setDatos] = useState([]);
+
+    const [datosUbicacion,setDatosUbicacion]=useState();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -46,8 +50,22 @@ export const ClienteScreen = () => {
             .then(response => {
                 const datosC = response.data;
                 setDatos(cust => datosC);
-                console.log(datosC);
 
+                const [detalles]=datosC;
+                const {DeliveryLocation}=detalles;
+                const {points}=DeliveryLocation;
+                const [pointsData]=points;
+                const {x,y}=pointsData;
+                setDatosUbicacion(
+                    {
+                        name: "Location 1",
+                        location: {
+                            lat: x,
+                            lng: y
+                        },
+                    }
+                );
+                // console.log(datosUbicacion);
             })
             .catch(error => console.log(error));
     }
@@ -55,7 +73,7 @@ export const ClienteScreen = () => {
 
     return (
         <div className="container">
-            <h1>Modulo Clientes</h1>
+            <h1>Módulo Clientes</h1>
             <hr />
             <br></br>
             <h5> Búsqueda de clientes por filtros</h5>
@@ -116,7 +134,6 @@ export const ClienteScreen = () => {
             </form>
             <br></br>
             <hr></hr>
-            <div className="anyClass">
             <table className="table dt-responsive nowrap table-hover">
                 <thead>
                     <tr>
@@ -140,7 +157,6 @@ export const ClienteScreen = () => {
                     }
                 </tbody>
             </table>
-            </div>
 
             <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg">
@@ -219,10 +235,14 @@ export const ClienteScreen = () => {
                                     </div>
                                 ))
                             }
+                            <h3>Localización:</h3>
+                            <MapContainer location={[
+                                datosUbicacion
+                            ]} />
                         </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>

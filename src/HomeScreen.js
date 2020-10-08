@@ -17,6 +17,10 @@ export const HomeScreen = () => {
     const [dato4, setDato4] = useState([]);
     const [dato5, setDato5] = useState([]);
 
+    const currencyFormat = (num) => {
+        return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+
     const handleSubmit01 = (e) => {
         e.preventDefault();
         if (proveedor01.length > 0) {
@@ -43,12 +47,14 @@ export const HomeScreen = () => {
     const handleSubmit02 = (e) => {
         e.preventDefault();
         if (cliente.length > 0) {
-            // axios.post("http://localhost:9000/Clientes/", formValues)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         setCustomers(cust => datosC);
-            //     })
-            //     .catch(error => console.log(error));
+            axios.post("http://localhost:9000/EstadisticaClientes/", {
+                'nombre': cliente
+            })
+                .then(response => {
+                    const datosC = response.data;
+                    setDato2(cust => datosC);
+                })
+                .catch(error => console.log(error));
         }
     }
 
@@ -63,12 +69,16 @@ export const HomeScreen = () => {
     const handleSubmit03 = (e) => {
         e.preventDefault();
         if (fecha13.length > 0 && fecha23.length > 0) {
-            // axios.post("http://localhost:9000/Clientes/", formValues)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         setCustomers(cust => datosC);
-            //     })
-            //     .catch(error => console.log(error));
+            console.log(fecha13);
+            axios.post("http://localhost:9000/EstadisticaProductos/", {
+                'fecha1': fecha13,
+                'fecha2': fecha23
+            })
+                .then(response => {
+                    const datosC = response.data;
+                    setDato3(cust => datosC);
+                })
+                .catch(error => console.log(error));
         }
     }
 
@@ -81,12 +91,15 @@ export const HomeScreen = () => {
     const handleSubmit04 = (e) => {
         e.preventDefault();
         if (fecha14.length > 0 && fecha24.length > 0) {
-            // axios.post("http://localhost:9000/Clientes/", formValues)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         setCustomers(cust => datosC);
-            //     })
-            //     .catch(error => console.log(error));
+            axios.post("http://localhost:9000/EstadisticaFacturas/", {
+                'fecha1': fecha14,
+                'fecha2': fecha24
+            })
+                .then(response => {
+                    const datosC = response.data;
+                    setDato4(cust => datosC);
+                })
+                .catch(error => console.log(error));
         }
     }
 
@@ -99,12 +112,15 @@ export const HomeScreen = () => {
     const handleSubmit05 = (e) => {
         e.preventDefault();
         if (fecha15.length > 0 && fecha25.length > 0) {
-            // axios.post("http://localhost:9000/Clientes/", formValues)
-            //     .then(response => {
-            //         const datosC = response.data;
-            //         setCustomers(cust => datosC);
-            //     })
-            //     .catch(error => console.log(error));
+            axios.post("http://localhost:9000/EstadisticaOrdenes/", {
+                'fecha1': fecha15,
+                'fecha2': fecha25
+            })
+                .then(response => {
+                    const datosC = response.data;
+                    setDato5(cust => datosC);
+                })
+                .catch(error => console.log(error));
         }
     }
 
@@ -121,7 +137,7 @@ export const HomeScreen = () => {
                     <div className="form-group col-md-10">
                         <div className="input-group">
                             <div className="input-group-prepend">
-                                <span className="input-group-text" id="inputGroupPrependproveedor01"><strong>Proveedor:</strong></span>
+                                <span className="input-group-text" id="inputGroupPrependproveedor01"><strong>Nombre de proveedor:</strong></span>
                             </div>
                             <input
                                 name='proveedor01'
@@ -141,31 +157,32 @@ export const HomeScreen = () => {
                 </div>
             </form>
             <br></br>
-            <table className="table dt-responsive nowrap table-hover" >
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre Proveedor</th>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">Monto Máximo</th>
-                        <th scope="col">Monto Mínimo</th>
-                        <th scope="col">Promedio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* {
-                        deliveri.map((deliveri) => (
-                            <tr>
-                                <td>{deliveri.SupplierName}</td>
-                                <td>{deliveri.SupplierCategoryName}</td>
-                                <td>{deliveri.DeliveryMethodName}</td>
-                                <td key={deliveri.SupplierID}><center><button className="btn btn-primary" onClick={(e) => getDatos(deliveri.SupplierID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
-
-                            </tr>
-                        ))
-                    } */}
-                </tbody>
-            </table>
-
+            <div className="anyClass">
+                <table className="table dt-responsive nowrap table-hover" >
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre proveedor</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Monto máximo</th>
+                            <th scope="col">Monto mínimo</th>
+                            <th scope="col">Promedio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            dato1.map((dato) => (
+                                <tr>
+                                    <td>{dato.SupplierName}</td>
+                                    <td>{dato.SupplierCategoryName}</td>
+                                    <td>{<span className="float-right">{currencyFormat(dato.maxAmount)}</span>}</td>
+                                    <td>{<span className="float-right">{currencyFormat(dato.minAmount)}</span>}</td>
+                                    <td>{<span className="float-right">{currencyFormat(dato.averageAmount)}</span>}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
             <br />
             <br />
             <br />
@@ -177,7 +194,7 @@ export const HomeScreen = () => {
                     <div className="form-group col-md-10">
                         <div className="input-group">
                             <div className="input-group-prepend">
-                                <span className="input-group-text" id="inputGroupPrependcliente"><strong>Cliente:</strong></span>
+                                <span className="input-group-text" id="inputGroupPrependcliente"><strong>Nombre de cliente:</strong></span>
                             </div>
                             <input
                                 name='cliente'
@@ -197,30 +214,32 @@ export const HomeScreen = () => {
                 </div>
             </form>
             <br></br>
-            <table className="table dt-responsive nowrap table-hover" >
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre Cliente</th>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">Monto Máximo</th>
-                        <th scope="col">Monto Mínimo</th>
-                        <th scope="col">Promedio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* {
-                        deliveri.map((deliveri) => (
-                            <tr>
-                                <td>{deliveri.SupplierName}</td>
-                                <td>{deliveri.SupplierCategoryName}</td>
-                                <td>{deliveri.DeliveryMethodName}</td>
-                                <td key={deliveri.SupplierID}><center><button className="btn btn-primary" onClick={(e) => getDatos(deliveri.SupplierID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
-
-                            </tr>
-                        ))
-                    } */}
-                </tbody>
-            </table>
+            <div className="anyClass">
+                <table className="table dt-responsive nowrap table-hover" >
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre cliente</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Monto máximo</th>
+                            <th scope="col">Monto mínimo</th>
+                            <th scope="col">Promedio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            dato2.map((dato) => (
+                                <tr>
+                                    <td>{dato.customerName}</td>
+                                    <td>{dato.CustomerCategoryName}</td>
+                                    <td>{currencyFormat(dato.maxAmount)}</td>
+                                    <td>{currencyFormat(dato.minAmount)}</td>
+                                    <td>{currencyFormat(dato.avgAmount)}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
 
 
             <br />
@@ -231,7 +250,7 @@ export const HomeScreen = () => {
             {/* --------------------------------------#3------------------------------- */}
             <form onSubmit={handleSubmit03}>
                 <div className="form-row">
-                    <div className="form-group col-md-10">
+                    <div className="form-group col-md-5">
                         <div className="input-group">
                             <div className="input-group-prepend">
                                 <span className="input-group-text" id="inputGroupPrependnumF3"><strong>Del:</strong></span>
@@ -242,7 +261,9 @@ export const HomeScreen = () => {
                                 className="form-control"
                                 value={fecha13}
                                 onChange={handleInputChange3}
-                                aria-describedby="inputGroupPrependnumF3" />
+                                aria-describedby="inputGroupPrependnumF3" 
+                                min="2013-01-01" max="2016-05-31" 
+                                />
                         </div>
                     </div>
                     <div className="form-group col-md-5">
@@ -256,9 +277,12 @@ export const HomeScreen = () => {
                                 className="form-control"
                                 value={fecha23}
                                 onChange={handleInputChange3}
-                                aria-describedby="inputGroupPrependcliente3" />
+                                aria-describedby="inputGroupPrependcliente3" 
+                                min="2013-01-01" max="2016-05-31" 
+                                />
                         </div>
                     </div>
+                    {/* </div> */}
                     <div className="form-group col-md-1">
                         <button className='btn btn-info' type="submit">Buscar</button>
                     </div>
@@ -268,30 +292,30 @@ export const HomeScreen = () => {
                 </div>
             </form>
             <br></br>
-            <table className="table dt-responsive nowrap table-hover" >
-                <thead>
-                    <tr>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">Rank</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* {
-                        deliveri.map((deliveri) => (
-                            <tr>
-                                <td>{deliveri.SupplierName}</td>
-                                <td>{deliveri.SupplierCategoryName}</td>
-                                <td>{deliveri.DeliveryMethodName}</td>
-                                <td key={deliveri.SupplierID}><center><button className="btn btn-primary" onClick={(e) => getDatos(deliveri.SupplierID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
-
-                            </tr>
-                        ))
-                    } */}
-                </tbody>
-            </table>
-
+            <div className="anyClass">
+                <table className="table dt-responsive nowrap table-hover" >
+                    <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            {/* <th scope="col">Fecha</th> */}
+                            <th scope="col" className="text-right">Total de ganancia</th>
+                            <th scope="col" className="text-center">Rank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            dato3.map((dato) => (
+                                <tr>
+                                    <td>{dato.Description}</td>
+                                    {/* <td>{dato.InvoiceDate}</td> */}
+                                    <td>{<span className="float-right">{currencyFormat(dato.extendedPrice)}</span>}</td>
+                                    <td>{<div className="text-center">{dato.rank}</div>}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
             <br />
             <br />
             <br />
@@ -311,7 +335,9 @@ export const HomeScreen = () => {
                                 className="form-control"
                                 value={fecha14}
                                 onChange={handleInputChange4}
-                                aria-describedby="inputGroupPrependnumF4" />
+                                aria-describedby="inputGroupPrependnumF4" 
+                                min="2013-01-01" max="2016-05-31" 
+                                />
                         </div>
                     </div>
                     <div className="form-group col-md-5">
@@ -325,7 +351,9 @@ export const HomeScreen = () => {
                                 className="form-control"
                                 value={fecha24}
                                 onChange={handleInputChange4}
-                                aria-describedby="inputGroupPrependcliente4" />
+                                aria-describedby="inputGroupPrependcliente4" 
+                                min="2013-01-01" max="2016-05-31" 
+                                />
                         </div>
                     </div>
                     <div className="form-group col-md-1">
@@ -337,28 +365,31 @@ export const HomeScreen = () => {
                 </div>
             </form>
             <br></br>
-            <table className="table dt-responsive nowrap table-hover" >
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre Cliente</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Monto total facturado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* {
-                        deliveri.map((deliveri) => (
-                            <tr>
-                                <td>{deliveri.SupplierName}</td>
-                                <td>{deliveri.SupplierCategoryName}</td>
-                                <td>{deliveri.DeliveryMethodName}</td>
-                                <td key={deliveri.SupplierID}><center><button className="btn btn-primary" onClick={(e) => getDatos(deliveri.SupplierID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
-
-                            </tr>
-                        ))
-                    } */}
-                </tbody>
-            </table>
+            <div className="anyClass">
+                <table className="table dt-responsive nowrap table-hover" >
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre cliente</th>
+                            {/* <th scope="col">Fecha</th> */}
+                            <th scope="col">Cantidad de facturas</th>
+                            <th scope="col" className="text-right" >Monto total facturado</th>
+                            <th scope="col" className="text-center">Rank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            dato4.map((dato) => (
+                                <tr>
+                                    <td>{dato.CustomerName}</td>
+                                    <td>{dato.cantidadFacturas}</td>
+                                    <td>{<span className="float-right">{currencyFormat(dato.montoTotalFacturas)}</span>}</td>
+                                    <td>{<div className="text-center">{dato.rank}</div>}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
 
 
             <br />
@@ -380,7 +411,9 @@ export const HomeScreen = () => {
                                 className="form-control"
                                 value={fecha15}
                                 onChange={handleInputChange5}
-                                aria-describedby="inputGroupPrepend51" />
+                                aria-describedby="inputGroupPrepend51" 
+                                min="2013-01-01" max="2016-05-31" 
+                                />
                         </div>
                     </div>
                     <div className="form-group col-md-5">
@@ -394,7 +427,9 @@ export const HomeScreen = () => {
                                 className="form-control"
                                 value={fecha25}
                                 onChange={handleInputChange5}
-                                aria-describedby="inputGroupPrepend5" />
+                                aria-describedby="inputGroupPrepend5" 
+                                min="2013-01-01" max="2016-05-31" 
+                                />
                         </div>
                     </div>
                     <div className="form-group col-md-1">
@@ -406,29 +441,33 @@ export const HomeScreen = () => {
                 </div>
             </form>
             <br></br>
-            <table className="table dt-responsive nowrap table-hover" >
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre Proveedor</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* {
-                        deliveri.map((deliveri) => (
-                            <tr>
-                                <td>{deliveri.SupplierName}</td>
-                                <td>{deliveri.SupplierCategoryName}</td>
-                                <td>{deliveri.DeliveryMethodName}</td>
-                                <td key={deliveri.SupplierID}><center><button className="btn btn-primary" onClick={(e) => getDatos(deliveri.SupplierID, e)} data-toggle="modal" data-target=".bd-example-modal-lg"><i className="fa fa-check"></i></button></center></td>
+            <div className="anyClass">
+                <table className="table dt-responsive nowrap table-hover" >
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre proveedor</th>
+                            {/* <th scope="col">Fecha</th> */}
+                            <th scope="col" className="text-right">Monto de transacción</th>
+                            <th scope="col" className="text-center">Cantidad de ordenes</th>
+                            <th scope="col">Rank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            dato5.map((dato) => (
+                                <tr>
+                                    <td>{dato.SupplierName}</td>
+                                    {/* <td>{dato.OrderDate}</td> */}
+                                    <td>{<span className="float-right">{currencyFormat(dato.transactionAmount)}</span>}</td>
 
-                            </tr>
-                        ))
-                    } */}
-                </tbody>
-            </table>
-
+                                    <td>{<div className="text-center">{dato.cantidadOrdenes}</div>}</td>
+                                    <td>{dato.rank}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }

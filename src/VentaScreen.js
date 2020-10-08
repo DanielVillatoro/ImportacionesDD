@@ -95,7 +95,7 @@ export const VentaScreen = () => {
 
     return (
         <div className="container">
-            <h1>Modulo Ventas</h1>
+            <h1>Módulo Ventas</h1>
             <hr />
             <br></br>
             <h5> Búsqueda de ventas por filtros</h5>
@@ -218,7 +218,7 @@ export const VentaScreen = () => {
                 <thead>
                     <tr>
                         <th scope="col"># Factura</th>
-                        <th scope="col">Nombre Cliente</th>
+                        <th scope="col">Nombre cliente</th>
                         <th scope="col">Método de entrega</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">Monto</th>
@@ -327,7 +327,7 @@ export const VentaScreen = () => {
                                         {
                                             datos.map((data) => (
                                                 <tr className="item">
-                                                    <td><button class="btn btn-link" role="link" onClick={(e) => getDatosProducto(data.StockItemID, e)} data-toggle="modal" data-target=".bd-productoInfo-modal-lg">{data.StockItemName}</button></td>
+                                                    <td><button className="btn btn-link text-left" role="link" onClick={(e) => getDatosProducto(data.StockItemID, e)} data-toggle="modal" data-target=".bd-productoInfo-modal-lg">{data.StockItemName}</button></td>
                                                     <td>{data.Quantity}</td>
                                                     <td>{currencyFormat(data.UnitPrice)}</td>
                                                     <td>{data.TaxRate}  %</td>

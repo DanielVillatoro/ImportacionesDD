@@ -65,7 +65,7 @@ export const InventarioScreen = () => {
 
     return (
         <div className="container">
-            <h1>Modulo Inventario</h1>
+            <h1>Módulo Inventario</h1>
             <hr />
             <br></br>
             <h5> Búsqueda de productos por filtros</h5>
@@ -90,7 +90,7 @@ export const InventarioScreen = () => {
                         <div className="form-group col-md-3">
                             <div className="input-group">
                                 <div className="input-group-prepend">
-                                    <span className="input-group-text" id="inputGroupPrependgrupo"><strong>G.pertenece:</strong></span>
+                                    <span className="input-group-text" id="inputGroupPrependgrupo"><strong>Grupo que pertenece:</strong></span>
                                 </div>
                                 <input
                                     name='grupo'
@@ -129,8 +129,8 @@ export const InventarioScreen = () => {
             <table className="table dt-responsive nowrap table-hover" >
                 <thead>
                     <tr>
-                        <th scope="col">Nombre Producto</th>
-                        <th scope="col">G.pertenece</th>
+                        <th scope="col">Nombre producto</th>
+                        <th scope="col">Grupo que pertenece</th>
                         <th scope="col">Cantidad</th>
                         <th scope="col">Seleccionar</th>
                     </tr>

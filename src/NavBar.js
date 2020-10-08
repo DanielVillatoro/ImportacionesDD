@@ -7,7 +7,7 @@ export const NavBar = () => {
 <nav className="navbar navbar-expand-lg navbar-dark bg-dark static-top">
   <div className="container">
     <a className="navbar-brand">
-          <img src="https://image.flaticon.com/icons/png/512/62/62950.png" alt="" width="40px"/>
+          <img src="https://cdn.discordapp.com/attachments/760345424703127613/763604858371833856/logo.png" alt="" width="55px"/>
         </a>
     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
@@ -27,7 +27,7 @@ export const NavBar = () => {
         <NavLink exact activeClassName="active" className="nav-item nav-link" to="/inventario">Inventario</NavLink>
         </li>
         <li className="nav-item">
-        <NavLink exact activeClassName="active" className="nav-item nav-link" to="/venta">VentaScreen</NavLink>
+        <NavLink exact activeClassName="active" className="nav-item nav-link" to="/venta">Ventas</NavLink>
         </li>
       </ul>
     </div>
